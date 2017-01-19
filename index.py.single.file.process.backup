@@ -1,6 +1,6 @@
 from flask import Flask
 import os
-from flask import render_template,request, redirect,make_response,send_file,request
+from flask import render_template,request, redirect,make_response,send_file
 from werkzeug import secure_filename
 import analyze
 import datetime
@@ -31,7 +31,7 @@ def result(pocessid=""):
         f.close()
         print 'file found!'
         tablestr = analyze.generateTable(data)
-        return render_template('result.html',NAME=pocessid[19:],RESULT=tablestr,FILENAME=pocessid,PWMFILE=pocessid,DOMAINFILE=pocessid[0:19]+"domain.txt",PLK="/result/"+pocessid,CURSHOW="div_1")
+        return render_template('result.html',NAME=pocessid[19:],RESULT=tablestr,FILENAME=pocessid,PWMFILE=pocessid,DOMAINFILE=pocessid[0:19]+"domain.txt",PLK="/result/"+pocessid)
         #return render_template('result.html',NAME=pwmfilename,RESULT=tablestr,FILENAME=pfilename,PWMFILE=pfilename,DOMAINFILE=dfilename,PLK="/result/"+pfilename)
     except Exception as e:
         return e.message
@@ -67,38 +67,29 @@ def upload_file():
     print("check request type")
     if request.method == 'POST':
         print("querying file")
-        pwmfilelist = request.files.getlist("file[]")
-        #pwmfile = request.files['pwmfile']
+        pwmfile = request.files['pwmfile']
         dofile = request.files['domainfile']
         #if pwmfile and allowed_file(pwmfile.filename):
         if True:
-            #secure the filename
-            pwmfilenamelist = []
-            for pwmfile in pwmfilelist:
-                pwmfilenamelist.append(secure_filename(pwmfile.filename))
+            pwmfilename = secure_filename(pwmfile.filename)
             dofilename = secure_filename(dofile.filename)
             timesuffix = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-            #make file name unique by adding time
-            i=0
-            for pwmfilename in pwmfilenamelist:
-                pwmfilenamelist[i] = timesuffix + pwmfilename
-                i+=1
+            pfilename = timesuffix + pwmfilename
             dfilename = timesuffix + dofilename
-            #save file for pocess
-            i=0
-            for file in pwmfilelist:
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], pwmfilenamelist[i]))
-                i+=1
+            pwmfile.save(os.path.join(app.config['UPLOAD_FOLDER'], pfilename))
             dofile.save(os.path.join(app.config['UPLOAD_FOLDER'], dfilename))
-            analyze.CallAnalyze(pwmfilenamelist,dfilename)
+            analyze.CallAnalyze(pfilename,dfilename)
             #after operation above,data had been put into cache/output/pwmfilename
-            tablestr,buttonstr,xid = analyze.generateTableL(pwmfilenamelist)
-            if xid == 1:
-                buttonstr = ""
-            return render_template('result.html',NAME="pwmfilename",RESULT=tablestr,FILENAME="pfilename",PWMFILE="pfilename",DOMAINFILE=dfilename,PLK="/result/"+"pfilename",CURSHOW="div_1",BUTTONSTR=buttonstr)
+            f = open("cache/output/"+pfilename)
+            data = f.read()
+            f.close()
+            tablestr = analyze.generateTable(data)
+            return render_template('result.html',NAME=pwmfilename,RESULT=tablestr,FILENAME=pfilename,PWMFILE=pfilename,DOMAINFILE=dfilename,PLK="/result/"+pfilename)
+            #return analyze.formateData(data)
+            #return redirect("result")
     print("error: not POST")
     return "YOU ARE NOT ALLOWED TO VISIT THIS PAGE"
 
 if __name__ == '__main__':
-    #app.run(host='172.31.26.26',port=1996,debug=True)
-    app.run(debug=True)
+    app.run(host='172.31.26.26',port=1996,debug=True)
+    #app.run(debug=True)

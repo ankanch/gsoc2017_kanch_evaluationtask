@@ -1,0 +1,89 @@
+{% extends "template.html" %} {% block content %}
+</br/>
+<div class="panel panel-primary" style="margin: auto 0px;align-content: center;">
+    <div class="panel-heading ">
+        <h3 class="panel-title">Analyze with DoMo-Pred</h3>
+    </div>
+    <div class="panel-body">
+        <strong>Note: After analyze finished,you will be auto redirect to the result page.</strong>
+        <div class="row">
+            <div class="col-md-6">
+                <form action="upload" method="POST" enctype="multipart/form-data" id="uploadform">
+                    <div class="row">
+
+                        <div class="form-group">
+                            <label for="inputFile" class="col-md-3 control-label text_right"> PWM File: </label>
+
+                            <div class="col-md-8">
+                                <input type="text" readonly="" class="form-control" placeholder="Browse...">
+                                <input type="file" id="pwmfile" name="pwmfile" multiple="">
+                                <!--input type="file" id="pwmfile" name="file[]" multiple=""-->
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="form-group">
+                            <label for="inputFile" class="col-md-3 control-label text_right">Domain File: </label>
+
+                            <div class="col-md-8">
+                                <input type="text" readonly="" class="form-control" placeholder="Browse...">
+                                <input type="file" id="domainfile" name="domainfile" multiple="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="text-align: center;">
+                        <img src="static/loading-cylon-red.svg" width="256" height="30" id="loading" style="display: none;">
+                        <input type="submit" onclick="a()" value="Upload" class="btn btn-raised btn-primary">
+                        <strong><p id="showtip"></p></strong>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <div class="alert alert-dismissible alert-info">
+                    <p>To begin analyze via DoMo-Pred,you have to upload 2 essential files. </p>
+                    <p>One is PWM file,which -----</p>
+                    <p>The other is domain file,which -----</p>
+                    <strong><p>For this evealuation you can download it by <a href="/download/test/TestDataset.zip" target="_blank"> click here</a></p></strong>
+                    <strong>Note:</strong>You may met MemoryError due to the small memory of Amazon ECS. Only accepts single file at this time.
+
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="bs-component">
+            <div class="progress">
+                <div class="progress-bar" style="width:50%;"></div>
+            </div>
+        </div>
+        <div class="row" style="width: 85%;margin: auto 30px;">
+            <h2>About DoMo-Pred</h2>
+            <strong>Predicting physiologically relevant SH3 domain mediated protein-protein interactions in yeast</strong>
+            <h3>Motivation</h3>
+            <p>Many intracellular signaling processes are mediated by interactions involving peptide recognition modules such as SH3 domains. These domains bind to small, linear protein sequence motifs which can be identified using high-throughput experimental
+                screens such as phage display. Binding motif patterns can then be used to computationally predict protein interactions mediated by these domains. While many protein-protein interaction prediction methods exist, most do not work with peptide
+                recognition module mediated interactions or do not consider many of the known constraints governing physiologically relevant interactions between two proteins.
+            </p>
+            <h3>Results</h3>
+            <p>A novel method for predicting physiologically relevant SH3 domain-peptide mediated protein-protein interactions in S. cerevisae using phage display data is presented. Like some previous similar methods, this method uses position weight matrix
+                models of protein linear motif preference for individual SH3 domains to scan the proteome for potential hits and then filters these hits using a range of evidence sources related to sequence-based and cellular constraints on protein interactions.
+                The novelty of this approach is the large number of evidence sources used and the method of combination of sequence based and protein pair based evidence sources. By combining different peptide and protein features using multiple Bayesian
+                models we are able to predict high confidence interactions with an overall accuracy accuracy
+            </p>
+            <a type="button" href="http://baderlab.org/Software/DoMo-Pred" target="_blank" class="btn btn-primary">For more information:http://baderlab.org/Software/DoMo-Pred</a>
+        </div>
+    </div>
+</div>
+<script>
+    var options = {
+        content: "Loading... this may takes several seconds.You may also met MemoryError", // text of the snackbar
+        style: "toast", // add a custom class to your snackbar
+        timeout: 5000 // time in milliseconds after the snackbar autohides, 0 is disabled
+    }
+
+    function a() {
+        $.snackbar(options);
+        $("#loading").toggle();
+        document.getElementById("showtip").innerHTML = "pocessing...";
+        document.getElementById("uploadform").disabled = true;
+    }
+</script>
+{% endblock %}

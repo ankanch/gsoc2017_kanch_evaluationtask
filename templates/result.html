@@ -1,0 +1,86 @@
+{% extends "template.html" %} {% block content %}
+<br/>
+<div class="panel panel-primary" style="margin: auto 0px;align-content: center;">
+    <div class="panel-heading ">
+        <h3 class="panel-title"><strong>{{NAME}} Analyze Result</strong></h3>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="alert alert-dismissible alert-info">
+                    <p><strong>{{NAME}}</strong>'s analyze results are as below. </p>
+                    <p>You can download this results also the doamin file and PWM file by click button on the right.</p>
+                    <p>You can get permalink of this page and share with your colleague.</p>
+                    <p>Table notes are at the end of the table.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <a href="/download/result/{{FILENAME}}" class="btn btn-raised btn-primary">Download Result</a>
+                <a href="/download/raw/{{PWMFILE}}" class="btn btn-raised btn-success">Download PWM file</a>
+                <a href="/download/raw/{{DOMAINFILE}}" class="btn btn-raised btn-success">Download doamin file</a>
+                <a class="btn btn-raised btn-primary" onclick="toggleDiv('pl')" <>Get Permalink</a>
+                <div id="pl" style="display: none;">
+                    <strong><p id="plk" class="text-warning"></p></strong>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="bs-component">
+                <div class="progress">
+                    <div class="progress-bar" style="width: 50%;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="cbuttons" style="text-align: center;">
+            {{BUTTONSTR|safe}}
+            <!--a href="javascript:showResult('div_1')" class="btn btn-raised btn-info" id="button_1">P12345</a>
+            <a href="javascript:showResult('div_2')" class="btn btn-raised btn-info" id="button_2">56789P</a-->
+        </div>
+        <div class="row">
+            <h2><span class="label label-info" id="xtips">Showing Result for: </span></h2>
+        </div>
+        <br/>
+        <div class="row">
+            {{RESULT|safe}}
+        </div>
+        <br/>
+        <div class="row" style="width: 90%;">
+            <div class="col-md-6" id="div_111">
+                <h4 class="text-info"> <strong>Note:</strong></h4>
+                <p class="text-info"> <strong>Domain</strong> is the Uniprot id of SH3 domain containing protein. </p>
+                <p class="text-info"><strong>Peptide</strong> is the Uniprot id of peptide containing protein.</p>
+                <p class="text-info"> <strong>Start and Stop</strong> are peptide start and stop positions.</p>
+
+            </div>
+            <div class="col-md-6" id="div_222">
+                <p class="text-info"> <strong>Sequence</strong> is the predicted peptide sequence. </p>
+                <p class="text-info"><strong>Peptide Score/Protein Score</strong> is the score of peptide/protein classifier. </p>
+                <p class="text-info"><strong>Peptide Count/Protein Count</strong> is the number of peptide/protein features used for predictions.</p>
+                <p class="text-info"> <strong>Score</strong> is the score of combined classifier.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var plk = "{{PLK}}";
+    var current_show = "{{CURSHOW}}";
+
+    $(document).ready(function() {
+        document.getElementById('plk').innerHTML = "http://" + window.location.host + plk;
+    });
+
+    function toggleDiv(divid) {
+
+        $("#" + divid).toggle();
+    }
+
+    function showResult(divid) {
+        document.getElementById("xtips").innerHTML = "Showing Result for: " + document.getElementById("button_" + divid.split("_")[1]).innerHTML;
+        $("#" + divid).toggle();
+        $("#" + current_show).toggle();
+        console.log("CUR=" + current_show + "\tdivid=" + divid);
+        current_show = divid;
+    }
+</script>
+{% endblock %}

@@ -95,7 +95,12 @@ def upload_file():
             tablestr,buttonstr,xid = analyze.generateTableL(pwmfilenamelist)
             if xid == 1:
                 buttonstr = ""
-            return render_template('result.html',NAME="pwmfilename",RESULT=tablestr,FILENAME="pfilename",PWMFILE="pfilename",DOMAINFILE=dfilename,PLK="/result/"+"pfilename",CURSHOW="div_1",BUTTONSTR=buttonstr)
+            #check if it is mulitifile or single file .then render the result page in different ways
+            if len(pwmfilenamelist) == 1:
+                #single file 
+                return render_template('result.html',NAME=pwmfilelist[0].filename,RESULT=tablestr,FILENAME=pwmfilenamelist[0],PWMFILE=pwmfilenamelist[0],DOMAINFILE=dfilename,PLK="/result/"+pwmfilenamelist[0],SHOWHEAD="none")
+            #multifile  pwmfilelist[0].filename
+            return render_template('result.html',NAME="",RESULT=tablestr,FILENAME="pfilename",PWMFILE="pfilename",DOMAINFILE=dfilename,PLK="/result/"+"pfilename",CURSHOW="div_0",BUTTONSTR=buttonstr)
     print("error: not POST")
     return "YOU ARE NOT ALLOWED TO VISIT THIS PAGE"
 

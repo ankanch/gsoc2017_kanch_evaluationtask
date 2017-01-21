@@ -32,5 +32,6 @@ BUTTON_TAIL = """</a>"""
 
 #for divs of result page
 DIV_HEAD = """<div id=\"div_"""
+DIV_HEAD_HIDE = """<div style="display: none;" id=\"div_"""
 DIV_A = """\">"""
 DIV_TAIL= """</div>"""

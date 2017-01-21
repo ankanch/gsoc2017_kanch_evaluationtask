@@ -50,6 +50,7 @@ def generateTableL(filelist):
     BUTTONSTR = ""
     xid = 0
     print 'start process file in filelist...'
+    firstshow = True
     for pfilename in filelist:
         print 'processing...'
         f = open("cache/output/"+pfilename)
@@ -68,8 +69,12 @@ def generateTableL(filelist):
                 STR.TABLE_C_REP + dseq[7] + STR.TABLE_C_REP + dseq[8] + STR.TABLE_C_REP + dseq[9] + STR.TABLE_C_END
                 tablestr += pstr
         tablestr += STR.TABLE_TAIL
-        tablestr = STR.DIV_HEAD + str(xid) + STR.DIV_A + tablestr + STR.DIV_TAIL
+        if firstshow == True:
+            tablestr = STR.DIV_HEAD + str(xid) + STR.DIV_A + tablestr + STR.DIV_TAIL
+            firstshow = False
+        else:
+            tablestr = STR.DIV_HEAD_HIDE + str(xid) + STR.DIV_A + tablestr + STR.DIV_TAIL
         TABSTR += tablestr
-        BUTTONSTR += STR.BUTTON_HEAD + str(xid) + STR.BUTTON_A + str(xid) + STR.BUTTON_B + pfilename + STR.BUTTON_TAIL
+        BUTTONSTR += STR.BUTTON_HEAD + str(xid) + STR.BUTTON_A + str(xid) + STR.BUTTON_B + pfilename[pfilename.find('P'):] + STR.BUTTON_TAIL
         xid+=1
     return TABSTR,BUTTONSTR,xid

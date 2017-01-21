@@ -38,7 +38,7 @@
             <a href="javascript:showResult('div_2')" class="btn btn-raised btn-info" id="button_2">56789P</a-->
         </div>
         <div class="row">
-            <h2><span class="label label-info" id="xtips">Showing Result for: </span></h2>
+            <h2><span class="label label-info" id="xtips" style="display: {{SHOWHEAD}}">Showing Result for:{{NAME}} </span></h2>
         </div>
         <br/>
         <div class="row">
@@ -68,6 +68,11 @@
 
     $(document).ready(function() {
         document.getElementById('plk').innerHTML = "http://" + window.location.host + plk;
+        $.snackbar({
+            content: "Tips:Click button above to show different result of a certain pwmfile", // text of the snackbar
+            style: "toast", // add a custom class to your snackbar
+            timeout: 5000 // time in milliseconds after the snackbar autohides, 0 is disabled
+        });
     });
 
     function toggleDiv(divid) {

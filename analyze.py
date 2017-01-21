@@ -8,6 +8,8 @@ from Protein import run_protein
 def CallAnalyze(pwmfile,domainfile):
     if type(pwmfile) == list:
         i=0
+        print 'type : list'
+        print 'file name',str(pwmfile)
         options = {'domain': "cache/"+domainfile, 'p-value': 1e-05}
         gen_data = run_peptide.setup_peptide()
         cel_data = run_protein.setup_protein()
@@ -17,6 +19,7 @@ def CallAnalyze(pwmfile,domainfile):
         print 'analyze finished!'
         return 
     else:
+        print 'type : single'
         options = {'output': "cache/output/"+pwmfile, 'pwm': "cache/"+pwmfile, 'domain': "cache/"+domainfile, 'p-value': 1e-05}
     DMP.process_options(options)
     print 'analyze finished!'
@@ -46,7 +49,9 @@ def generateTableL(filelist):
     TABSTR = ""
     BUTTONSTR = ""
     xid = 0
+    print 'start process file in filelist...'
     for pfilename in filelist:
+        print 'processing...'
         f = open("cache/output/"+pfilename)
         rawdata = f.read()
         f.close()

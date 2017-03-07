@@ -69,28 +69,41 @@ def upload_file():
         print("querying file")
         pwmfilelist = request.files.getlist("file[]")
         #pwmfile = request.files['pwmfile']
-        dofile = request.files['domainfile']
+        use_built_in = request.form['hid1']
+        print("wether to use built-in domain data:",use_built_in)
+        dofile = None
+        UBI = True
+        if use_built_in == 'false':
+            UBI = False
+            dofile = request.files['domainfile']
         #if pwmfile and allowed_file(pwmfile.filename):
         if True:
             #secure the filename
             pwmfilenamelist = []
             for pwmfile in pwmfilelist:
                 pwmfilenamelist.append(secure_filename(pwmfile.filename))
-            dofilename = secure_filename(dofile.filename)
+            dofilename = ""
+            if UBI == False:
+                dofilename = secure_filename(dofile.filename)
             timesuffix = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
             #make file name unique by adding time
             i=0
             for pwmfilename in pwmfilenamelist:
                 pwmfilenamelist[i] = timesuffix + pwmfilename
                 i+=1
-            dfilename = timesuffix + dofilename
+            dfilename = ""
+            if UBI == False:
+                dfilename = timesuffix + dofilename
             #save file for pocess
             i=0
             for file in pwmfilelist:
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], pwmfilenamelist[i]))
                 i+=1
-            dofile.save(os.path.join(app.config['UPLOAD_FOLDER'], dfilename))
-            analyze.CallAnalyze(pwmfilenamelist,dfilename)
+            if UBI == False:
+                dofile.save(os.path.join(app.config['UPLOAD_FOLDER'], dfilename))
+                analyze.CallAnalyze(pwmfilenamelist,dfilename)
+            else:
+                analyze.CallAnalyze(pwmfilenamelist,"domain.txt")
             #after operation above,data had been put into cache/output/pwmfilename
             tablestr,buttonstr,xid = analyze.generateTableL(pwmfilenamelist)
             if xid == 1:

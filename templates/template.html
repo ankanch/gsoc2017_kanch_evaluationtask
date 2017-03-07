@@ -270,49 +270,51 @@
                 </div>
             </div>
         </div>
+    </div>
 
 
-        <div class="row" id="infodiv" style="display:none; text-align: center;width: 60%;margin:0px auto;">
-            <div class="panel panel-default" style="margin: auto 0px;">
-                <div class="panel-body">
-                    <p class="text-warning"> this site is only used for evaluation of DoMo-Pred Web Interface</p>
-                    <p class="text-warning"><a href="https://github.com/nrnb/GoogleSummerOfCode/issues/63" target="_blank">Issue 63 :Developing a web interface for DoMo-Pred, the protein interactions prediction tool </a>
-                        <p>
-                            <p class="text-warning">by Long Zhang from Chengdu University of Information Technology </p>
-                            <p class="text-warning">CS 2015 Major </p>
-                </div>
+    <div class="row" id="infodiv" style="display:none; text-align: center;width: 60%;margin:0px auto;">
+        <div class="panel panel-default" style="margin: auto 0px;">
+            <div class="panel-body">
+                <p class="text-warning"> this site is only used for evaluation of DoMo-Pred Web Interface</p>
+                <p class="text-warning"><a href="https://github.com/nrnb/GoogleSummerOfCode/issues/63" target="_blank">Issue 63 :Developing a web interface for DoMo-Pred, the protein interactions prediction tool </a>
+                    <p>
+                        <p class="text-warning">by Long Zhang from Chengdu University of Information Technology </p>
+                        <p class="text-warning">CS 2015 Major </p>
             </div>
         </div>
-        <!--在下面添加自定义代码-->
-        <div class="row">
-            <div class="container">
-                {% block content %}{% endblock %}
-            </div>
+    </div>
+    <!--在下面添加自定义代码-->
+    <div class="row" style="margin: 0px auto;">
+        <div class="container">
+            {% block content %}{% endblock %}
         </div>
-        <div class="row" style="text-align:center" id="footer">
+        <div class="row" style="text-align:center;width: 90%;margin: 0px auto;" id="footer">
             <br/>
             <br/>
             <p class="text-primary"> this site is only used for evaluation of DoMo-Pred Web Interface</p>
             <p class="text-primary">by Long Zhang from Chengdu University of Information Technology </p>
         </div>
+    </div>
 
 
-        <!-- Include all compiled plugins (below), or include individual files as needed -->
-        <script src="../static/dist/js/bootstrap.min.js"></script>
-        <!-- Material Design for Bootstrap -->
-        <script src="../static/bmaterial/dist/js/material.js"></script>
-        <script src="../static/bmaterial/dist/js/ripples.min.js"></script>
-        <!-- SnackbarJS, find it in /dist -->
-        <script src="../static/snackbar/dist/snackbar.min.js"></script>
-        <script>
-            $.material.init();
-        </script>
-        <!-- 显示关于 -->
-        <script type="text/javascript">
-            function toggleDiv(divId) {
-                $("#" + divId).toggle();
-            }
-        </script>
+
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="../static/dist/js/bootstrap.min.js"></script>
+    <!-- Material Design for Bootstrap -->
+    <script src="../static/bmaterial/dist/js/material.js"></script>
+    <script src="../static/bmaterial/dist/js/ripples.min.js"></script>
+    <!-- SnackbarJS, find it in /dist -->
+    <script src="../static/snackbar/dist/snackbar.min.js"></script>
+    <script>
+        $.material.init();
+    </script>
+    <!-- 显示关于 -->
+    <script type="text/javascript">
+        function toggleDiv(divId) {
+            $("#" + divId).toggle();
+        }
+    </script>
 
 </body>
 

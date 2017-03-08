@@ -2,25 +2,30 @@
 <br/>
 <div class="panel panel-primary" style="margin: auto 0px;align-content: center;">
     <div class="panel-heading ">
-        <h3 class="panel-title"><strong>{{NAME}} Analyze Result</strong></h3>
+        <h3 class="panel-title"><strong>Analyze Result</strong></h3>
     </div>
     <div class="panel-body">
         <div class="row">
             <div class="col-md-6">
                 <div class="alert alert-dismissible alert-info">
-                    <p><strong>{{NAME}}</strong>'s analyze results are as below. </p>
-                    <p>You can download this results also the doamin file and PWM file by click button on the right.</p>
+                    <p>Analyze results are as below. Click button to change result view,if possible.</p>
+                    <p>You can download this results as well as doamin file and PWM files by click button on the right.</p>
                     <p>You can get permalink of this page and share with your colleague.</p>
+                    <p>If you're using built-in domain files,you can download it by
+                        <a href="/download/domain/builtin" target="_blank"><strong> clicking here</strong>.</a>
+                    </p>
                     <p>Table notes are at the end of the table.</p>
                 </div>
             </div>
             <div class="col-md-6">
-                <a href="/download/result/{{FILENAME}}" class="btn btn-raised btn-primary">Download Result</a>
-                <a href="/download/raw/{{PWMFILE}}" class="btn btn-raised btn-success">Download PWM file</a>
-                <a href="/download/raw/{{DOMAINFILE}}" class="btn btn-raised btn-success">Download doamin file</a>
-                <a class="btn btn-raised btn-primary" onclick="toggleDiv('pl')" <>Get Permalink</a>
-                <div id="pl" style="display: none;">
-                    <strong><p id="plk" class="text-warning"></p></strong>
+                <div class="row">
+                    <a href="/download/result/{{SESSION}}" class="btn btn-raised btn-primary">Download Result & Source Files</a>
+                </div>
+                <div class="row">
+                    <a class="btn btn-raised btn-primary" onclick="toggleDiv('pl')" <>Get Permalink</a>
+                    <div id="pl" style="display: none;width: 90%">
+                        <textarea class="form-control" id="plk2" type="text" rows="2" readonly></textarea>
+                    </div>
                 </div>
             </div>
         </div>
@@ -28,7 +33,7 @@
         <div class="row">
             <div class="bs-component">
                 <div class="progress">
-                    <div class="progress-bar" style="width: 50%;"></div>
+                    <div class="progress-bar" style="width: 0%;"></div>
                 </div>
             </div>
         </div>
@@ -67,7 +72,7 @@
     var current_show = "{{CURSHOW}}";
 
     $(document).ready(function() {
-        document.getElementById('plk').innerHTML = "http://" + window.location.host + plk;
+        document.getElementById('plk2').value = "http://" + window.location.host + plk;
         $.snackbar({
             content: "Tips:Click button above to show different result of a certain pwmfile", // text of the snackbar
             style: "toast", // add a custom class to your snackbar

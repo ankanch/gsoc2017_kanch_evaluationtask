@@ -3,7 +3,6 @@ import os
 from flask import render_template,request, redirect,make_response,send_file,request
 from werkzeug import secure_filename
 import analyze
-import datetime
 
 
 app = Flask(__name__)
@@ -20,39 +19,40 @@ def index():
 
 
 @app.route('/result')
-@app.route('/result/<pocessid>')
-def result(pocessid=""):
-    if pocessid == "":
+@app.route('/result/<session>')
+def result(session=""):
+    if session == "":
         return render_template('result.html',NAME="pwmfilename",RESULT="tablestr",FILENAME="pfilename")
     try:
-        print 'pocessid=',pocessid
-        f = open("cache/output/"+pocessid)
-        data = f.read()
-        f.close()
-        print 'file found!'
-        tablestr = analyze.generateTable(data)
-        return render_template('result.html',NAME=pocessid[19:],RESULT=tablestr,FILENAME=pocessid,PWMFILE=pocessid,DOMAINFILE=pocessid[0:19]+"domain.txt",PLK="/result/"+pocessid,CURSHOW="div_1")
-        #return render_template('result.html',NAME=pwmfilename,RESULT=tablestr,FILENAME=pfilename,PWMFILE=pfilename,DOMAINFILE=dfilename,PLK="/result/"+pfilename)
+        info = analyze.readinfo(session)
+        print 'session=',session,'info=',info
+        tablestr,buttonstr,xid = analyze.generateTableL(info[1],session)
+        if xid == 1:
+            buttonstr = ""
+        #check if it is mulitifile or single file .then render the result page in different ways
+        print("history result load done.")
+        if len(info[1]) == 1:
+            #single file 
+            return render_template('result.html',NAME=info[1][0],RESULT=tablestr,PLK="/result/"+session,SHOWHEAD="none",SESSION=session)
+        #multifile  pwmfilelist[0].filename
+        return render_template('result.html',NAME=info[1][0],RESULT=tablestr,PLK="/result/"+session,CURSHOW="div_0",BUTTONSTR=buttonstr,SESSION=session)
     except Exception as e:
         return e.message
-        return "ERROR: Invaild ID"
 
-@app.route('/download/<ftype>/<filename>')
-def downloadresult(ftype,filename):
+@app.route('/download/<ftype>/<session>')
+def downloadresult(ftype,session):
     if ftype == "result":
         try:
-            response = make_response(send_file("cache/output/"+filename))
-            response.headers["Content-Disposition"] = "attachment; filename=result_" + filename + ".txt;"
+            analyze.make_zip("cache/"+session,"cache/output/"+session+".zip")
+            response = make_response(send_file("cache/output/"+session+".zip"))
+            response.headers["Content-Disposition"] = "attachment; filename=" + session + ".zip;"
             return response
-        except:
-            return "ERROR: File Not Found"
-    elif ftype == "raw":
-        try:
-            response = make_response(send_file("cache/"+filename))
-            response.headers["Content-Disposition"] = "attachment; filename=src_" + filename + ".txt;"
-            return response
-        except:
-            return "ERROR: File Not Found"
+        except Exception as e:
+            return e.message
+    elif ftype == "domain":
+        response = make_response(send_file("cache/domain.txt"))
+        response.headers["Content-Disposition"] = "attachment; filename=domain.txt;"
+        return response
     elif ftype == "test":
         response = make_response(send_file("cache/test/TestDataset.zip"))
         response.headers["Content-Disposition"] = "attachment; filename=TestDataset.zip;"
@@ -85,38 +85,44 @@ def upload_file():
             dofilename = ""
             if UBI == False:
                 dofilename = secure_filename(dofile.filename)
-            timesuffix = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-            #make file name unique by adding time
-            i=0
-            for pwmfilename in pwmfilenamelist:
-                pwmfilenamelist[i] = timesuffix + pwmfilename
-                i+=1
-            dfilename = ""
+            #generate session id for organising the upload files
+            #all files that upload are in the same session folder
+            session = analyze.generateSessionID()
+            os.makedirs(app.config['UPLOAD_FOLDER']+"/"+session)
+            #save info to the sessionmap.csv
+            dfilename = dofilename
             if UBI == False:
-                dfilename = timesuffix + dofilename
+                #Structure: [session-id,[pwm-file-list],domain-file]
+                analyze.saveinfo([session,pwmfilenamelist,dofilename])
+            else:
+                analyze.saveinfo([session,pwmfilenamelist,"UBI"])
             #save file for pocess
+            #we have to save a session id for future lookup results and download results 
+            #we have to save those uploaded file in a session-id named folder for analyze and organize
             i=0
             for file in pwmfilelist:
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], pwmfilenamelist[i]))
+                file.save(os.path.join(app.config['UPLOAD_FOLDER']+session+"/", pwmfilenamelist[i]))
                 i+=1
             if UBI == False:
-                dofile.save(os.path.join(app.config['UPLOAD_FOLDER'], dfilename))
-                analyze.CallAnalyze(pwmfilenamelist,dfilename)
+                dofile.save(os.path.join(app.config['UPLOAD_FOLDER']+session+"/", dfilename))
+                analyze.CallAnalyze(pwmfilenamelist,session+"/"+dfilename,session)
             else:
-                analyze.CallAnalyze(pwmfilenamelist,"domain.txt")
+                analyze.CallAnalyze(pwmfilenamelist,"domain.txt",session)
             #after operation above,data had been put into cache/output/pwmfilename
-            tablestr,buttonstr,xid = analyze.generateTableL(pwmfilenamelist)
+            return redirect("/result/"+session)
+            tablestr,buttonstr,xid = analyze.generateTableL(pwmfilenamelist,session)
+            print("analyze session done.")
             if xid == 1:
                 buttonstr = ""
             #check if it is mulitifile or single file .then render the result page in different ways
             if len(pwmfilenamelist) == 1:
                 #single file 
-                return render_template('result.html',NAME=pwmfilelist[0].filename,RESULT=tablestr,FILENAME=pwmfilenamelist[0],PWMFILE=pwmfilenamelist[0],DOMAINFILE=dfilename,PLK="/result/"+pwmfilenamelist[0],SHOWHEAD="none")
+                return render_template('result.html',NAME=pwmfilelist[0].filename,RESULT=tablestr,FILENAME=pwmfilenamelist[0],PLK="/result/"+session,SHOWHEAD="none",SESSION=session)
             #multifile  pwmfilelist[0].filename
-            return render_template('result.html',NAME="",RESULT=tablestr,FILENAME="pfilename",PWMFILE="pfilename",DOMAINFILE=dfilename,PLK="/result/"+"pfilename",CURSHOW="div_0",BUTTONSTR=buttonstr)
+            return render_template('result.html',NAME=pwmfilelist[0].filename,RESULT=tablestr,FILENAME="pfilename",PLK="/result/"+session,CURSHOW="div_0",BUTTONSTR=buttonstr,SESSION=session)
     print("error: not POST")
     return "YOU ARE NOT ALLOWED TO VISIT THIS PAGE"
 
 if __name__ == '__main__':
-    #app.run(host='172.31.26.26',port=1996,debug=True)
-    app.run(debug=True)
+    app.run(host='138.68.18.184',port=1996,debug=True)
+    #app.run(debug=True)

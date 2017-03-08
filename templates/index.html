@@ -50,11 +50,11 @@
             </div>
             <div class="col-md-6">
                 <div class="alert alert-dismissible alert-info">
-                    <p>To begin analyze via DoMo-Pred,you have to upload 2 essential files. </p>
+                    <p>To begin analyze via DoMo-Pred,you have to upload 2 essential files or use built-in domain file as well. </p>
                     <p>One is PWM file,which -----</p>
                     <p>The other is domain file,which -----</p>
                     <strong><p>For this evealuation you can download it by <a href="/download/test/TestDataset.zip" target="_blank"> click here</a></p></strong>
-                    <strong>Note:</strong>You may met MemoryError due to the small memory of Amazon ECS. Only accepts single file at this time.
+                    <strong>Note:</strong>It may takes serveral minutes to analyze it depends on the amount of pwm files input.
 
                 </div>
             </div>
@@ -62,7 +62,7 @@
         <br/>
         <div class="bs-component">
             <div class="progress">
-                <div class="progress-bar" style="width:50%;"></div>
+                <div class="progress-bar" style="width:0%;"></div>
             </div>
         </div>
         <div class="row" style="width: 85%;margin: auto 30px;">
@@ -85,7 +85,7 @@
 </div>
 <script>
     var options = {
-        content: "Loading... this may takes several seconds.You may also met MemoryError", // text of the snackbar
+        content: "Loading... this may takes several minutes depends on the amount of input pmw-files", // text of the snackbar
         style: "toast", // add a custom class to your snackbar
         timeout: 5000 // time in milliseconds after the snackbar autohides, 0 is disabled
     }

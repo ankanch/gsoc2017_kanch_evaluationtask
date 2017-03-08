@@ -124,5 +124,5 @@ def upload_file():
     return "YOU ARE NOT ALLOWED TO VISIT THIS PAGE"
 
 if __name__ == '__main__':
-    app.run(host='138.68.18.184',port=1996,debug=True)
+    app.run(host='138.68.4.76',port=1996,debug=True)
     #app.run(debug=True)
